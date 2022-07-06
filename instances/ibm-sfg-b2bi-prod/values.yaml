@@ -8,7 +8,7 @@ ibm-sfg-prod:
     image:
       repository: cp.icr.io/cp/ibm-sfg/sfg
     # Provide the tag value in double quotes
-      tag: 6.1.0.0
+      tag: 6.1.0.1
       pullPolicy: IfNotPresent
       pullSecret: ibm-entitlement-key
   serviceAccount:
