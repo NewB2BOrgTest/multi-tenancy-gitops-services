@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "281"
+  name: sterlingccmtoolkit
+  namespace: sccm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sterlingccmtoolkit
+  template:
+    metadata:
+      labels:
+        app: sterlingccmtoolkit
+    spec:
+      containers:
+      - name: sterlingccmtoolkit
+        image: quay.io/hollisc/sterlingtoolkit:1.0.6
+        command: ["/bin/bash", "-ce", "cp /temp/db2jcc4.jar /var/nfs-data/resources/ && tail -f /dev/null"]
+        securityContext:
+          runAsUser: 0
+        volumeMounts:
+        - mountPath: /var/nfs-data/resources
+          name: volume
+      volumes:
+      - name: volume
+        persistentVolumeClaim:
+          claimName: ibm-sccm-input-pvc
