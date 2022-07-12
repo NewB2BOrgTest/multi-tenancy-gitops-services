@@ -3,20 +3,20 @@ kind: Deployment
 metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "281"
-  name: sterlingccmtoolkit
+  name: sterlingtoolkit
   namespace: sccm
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: sterlingccmtoolkit
+      app: sterlingtoolkit
   template:
     metadata:
       labels:
-        app: sterlingccmtoolkit
+        app: sterlingtoolkit
     spec:
       containers:
-      - name: sterlingccmtoolkit
+      - name: sterlingtoolkit
         image: quay.io/hollisc/sterlingtoolkit:1.0.6
         command: ["/bin/bash", "-ce", "cp /temp/db2jcc4.jar /var/nfs-data/resources/ && tail -f /dev/null"]
         securityContext:
@@ -24,6 +24,7 @@ spec:
         volumeMounts:
         - mountPath: /var/nfs-data/resources
           name: volume
+          subPathExpr: user_inputs
       volumes:
       - name: volume
         persistentVolumeClaim:
