@@ -107,8 +107,8 @@ ibm-sccm:
     dbSSL: ""
       
     # Keystore and truststore configuration
-    keyStore: "/app/certs_secret_files/keystore.jks"
-    trustStore: "/app/certs_secret_files/truststore.jks"
+    keyStore: "/app/CC/user_inputs/keystore.jks"
+    trustStore: "/app/CC/user_inputs/truststore.jks"
     keyAlias: "self"
     adminEmailAddress: "jeric.saez@ibm.com"
 
@@ -186,7 +186,7 @@ ibm-sccm:
     
   secret:
     secretName:  "ibm-sccm-secret"
-    certsSecretName: "ibm-sccm-certs-secret"
+    #certsSecretName: "ibm-sccm-certs-secret"
 
   dashboard:
     enabled: true
