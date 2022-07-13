@@ -33,4 +33,4 @@ spec:
           claimName: ibm-sccm-input-pvc
       - name: sccm-certs-secret
         secret:
-          secretName: 
+          secretName: ibm-sccm-certs-secret
