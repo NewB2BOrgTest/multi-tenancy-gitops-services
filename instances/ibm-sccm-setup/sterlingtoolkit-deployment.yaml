@@ -27,6 +27,7 @@ spec:
           subPathExpr: user_inputs
         - mountPath: /app/certs_secret_files
           name: sccm-certs-secret
+          readOnly: false
       volumes:
       - name: volume
         persistentVolumeClaim:
