@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+NS="sccm"
+
 # Set variables
 if [[ -z ${CC_DB_PASSWORD} ]]; then
   echo "Please provide environment variable CC_DB_PASSWORD"
@@ -59,3 +61,20 @@ kubeseal -n sccm --controller-name=${SEALED_SECRET_CONTOLLER_NAME} --controller-
 
 # NOTE, do not check delete-ibm-sccm-secret.yaml into git!
 rm delete-ibm-sccm-secret.yaml
+
+echo "Creating truststore.jks and keystore.jks certificate"
+DOMAIN=$(oc get ingresscontroller -n openshift-ingress-operator default -o jsonpath='{.status.domain}')
+
+keytool -genkey -keystore keystore.jks -storepass ${KEYSTORE_PASSWORD} -alias self -dname "CN=*.${DOMAIN}, ou=IBM Control Center, o=Director, L=Armonk, st=New York, c=US" -keypass ${KEYSTORE_PASSWORD} -sigalg SHA256withRSA -keyalg RSA
+
+keytool -export -alias self -file selfsigned.cer -keystore keystore.jks
+
+keytool -import -v -trustcacerts -alias self -file selfsigned.cer -keystore truststore.jks -keypass ${TRUSTSTORE_PASSWORD} -storepass ${TRUSTSTORE_PASSWORD}
+
+oc create secret generic ibm-sccm-jks-certs-secret --type=Opaque --from-file=keystore=keystore.jks --from-file=truststore=truststore.jks --dry-run=client -o yaml > delete-ibm-sccm-keystore-jks.yaml
+
+kubeseal -n ${NS} --controller-name=${SEALED_SECRET_CONTOLLER_NAME} --controller-namespace=${SEALED_SECRET_NAMESPACE} -o yaml < delete-ibm-sccm-keystore-jks.yaml > ibm-sccm-keystore-jks.yaml
+rm keystore.jks
+rm selfsigned.cer
+rm truststore.jks
+rm delete-ibm-sccm-keystore-jks.yaml
